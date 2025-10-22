@@ -1,78 +1,53 @@
+
 import React from "react";
-import { Stack, Link } from "expo-router";
-import { FlatList, Pressable, StyleSheet, View, Text, Alert, Platform } from "react-native";
+import { Stack } from "expo-router";
+import { ScrollView, StyleSheet, View, Text, Platform, Pressable } from "react-native";
 import { IconSymbol } from "@/components/IconSymbol";
-import { GlassView } from "expo-glass-effect";
-import { useTheme } from "@react-navigation/native";
+import { colors, commonStyles } from "@/styles/commonStyles";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const ICON_COLOR = "#007AFF";
-
-export default function HomeScreen() {
-  const theme = useTheme();
-  const modalDemos = [
-    {
-      title: "Standard Modal",
-      description: "Full screen modal presentation",
-      route: "/modal",
-      color: "#007AFF",
-    },
-    {
-      title: "Form Sheet",
-      description: "Bottom sheet with detents and grabber",
-      route: "/formsheet",
-      color: "#34C759",
-    },
-    {
-      title: "Transparent Modal",
-      description: "Overlay without obscuring background",
-      route: "/transparent-modal",
-      color: "#FF9500",
-    }
+export default function DashboardScreen() {
+  const stats = [
+    { label: 'Jobs Today', value: '8', icon: 'calendar', color: colors.primary },
+    { label: 'Pending', value: '3', icon: 'clock', color: colors.warning },
+    { label: 'Completed', value: '24', icon: 'checkmark.circle', color: colors.success },
+    { label: 'Revenue', value: '$4,250', icon: 'dollarsign.circle', color: colors.secondary },
   ];
 
-  const renderModalDemo = ({ item }: { item: (typeof modalDemos)[0] }) => (
-    <GlassView style={[
-      styles.demoCard,
-      Platform.OS !== 'ios' && { backgroundColor: theme.dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
-    ]} glassEffectStyle="regular">
-      <View style={[styles.demoIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name="square.grid.3x3" color="white" size={24} />
-      </View>
-      <View style={styles.demoContent}>
-        <Text style={[styles.demoTitle, { color: theme.colors.text }]}>{item.title}</Text>
-        <Text style={[styles.demoDescription, { color: theme.dark ? '#98989D' : '#666' }]}>{item.description}</Text>
-      </View>
-      <Link href={item.route as any} asChild>
-        <Pressable>
-          <GlassView style={[
-            styles.tryButton,
-            Platform.OS !== 'ios' && { backgroundColor: theme.dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)' }
-          ]} glassEffectStyle="clear">
-            <Text style={[styles.tryButtonText, { color: theme.colors.primary }]}>Try It</Text>
-          </GlassView>
-        </Pressable>
-      </Link>
-    </GlassView>
-  );
+  const recentJobs = [
+    { id: '1', customer: 'John Smith', vehicle: '2020 Honda Accord', status: 'In Progress', time: '10:30 AM' },
+    { id: '2', customer: 'Sarah Johnson', vehicle: '2019 Toyota Camry', status: 'Scheduled', time: '2:00 PM' },
+    { id: '3', customer: 'Mike Davis', vehicle: '2021 Ford F-150', status: 'Completed', time: '8:00 AM' },
+  ];
+
+  const technicians = [
+    { id: '1', name: 'Alex Martinez', status: 'Active', jobs: 3 },
+    { id: '2', name: 'Chris Lee', status: 'Active', jobs: 2 },
+    { id: '3', name: 'Jordan Taylor', status: 'Break', jobs: 0 },
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'In Progress':
+      case 'Active':
+        return colors.primary;
+      case 'Scheduled':
+        return colors.warning;
+      case 'Completed':
+        return colors.success;
+      case 'Break':
+        return colors.textSecondary;
+      default:
+        return colors.text;
+    }
+  };
 
   const renderHeaderRight = () => (
     <Pressable
-      onPress={() => Alert.alert("Not Implemented", "This feature is not implemented yet")}
-      style={styles.headerButtonContainer}
+      onPress={() => console.log('Notifications pressed')}
+      style={styles.headerButton}
     >
-      <IconSymbol name="plus" color={theme.colors.primary} />
-    </Pressable>
-  );
-
-  const renderHeaderLeft = () => (
-    <Pressable
-      onPress={() => Alert.alert("Not Implemented", "This feature is not implemented yet")}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol
-        name="gear"
-        color={theme.colors.primary}
-      />
+      <IconSymbol name="bell.fill" color={colors.primary} size={24} />
     </Pressable>
   );
 
@@ -81,81 +56,220 @@ export default function HomeScreen() {
       {Platform.OS === 'ios' && (
         <Stack.Screen
           options={{
-            title: "Building the app...",
+            title: "GlassWorks Pro",
             headerRight: renderHeaderRight,
-            headerLeft: renderHeaderLeft,
           }}
         />
       )}
-      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <FlatList
-          data={modalDemos}
-          renderItem={renderModalDemo}
-          keyExtractor={(item) => item.route}
+      <SafeAreaView style={commonStyles.container} edges={['top']}>
+        <ScrollView 
+          style={styles.scrollView}
           contentContainerStyle={[
-            styles.listContainer,
-            Platform.OS !== 'ios' && styles.listContainerWithTabBar
+            styles.scrollContent,
+            Platform.OS !== 'ios' && styles.scrollContentWithTabBar
           ]}
-          contentInsetAdjustmentBehavior="automatic"
           showsVerticalScrollIndicator={false}
-        />
-      </View>
+        >
+          {Platform.OS !== 'ios' && (
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>GlassWorks Pro</Text>
+              <Pressable
+                onPress={() => console.log('Notifications pressed')}
+                style={styles.headerButton}
+              >
+                <IconSymbol name="bell.fill" color={colors.primary} size={24} />
+              </Pressable>
+            </View>
+          )}
+
+          <Text style={styles.greeting}>Welcome back! 👋</Text>
+          <Text style={styles.subGreeting}>Here&apos;s what&apos;s happening today</Text>
+
+          {/* Stats Grid */}
+          <View style={styles.statsGrid}>
+            {stats.map((stat, index) => (
+              <View key={index} style={styles.statCard}>
+                <View style={[styles.statIcon, { backgroundColor: stat.color + '20' }]}>
+                  <IconSymbol name={stat.icon as any} color={stat.color} size={24} />
+                </View>
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Recent Jobs */}
+          <View style={commonStyles.section}>
+            <View style={commonStyles.row}>
+              <Text style={commonStyles.subtitle}>Recent Jobs</Text>
+              <Pressable onPress={() => console.log('View all jobs')}>
+                <Text style={[styles.linkText, { color: colors.primary }]}>View All</Text>
+              </Pressable>
+            </View>
+            {recentJobs.map((job) => (
+              <View key={job.id} style={commonStyles.card}>
+                <View style={commonStyles.row}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.jobCustomer}>{job.customer}</Text>
+                    <Text style={commonStyles.textSecondary}>{job.vehicle}</Text>
+                  </View>
+                  <Text style={commonStyles.textSecondary}>{job.time}</Text>
+                </View>
+                <View style={styles.statusBadgeContainer}>
+                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(job.status) + '20' }]}>
+                    <Text style={[styles.statusText, { color: getStatusColor(job.status) }]}>
+                      {job.status}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Technician Status */}
+          <View style={commonStyles.section}>
+            <Text style={commonStyles.subtitle}>Technician Status</Text>
+            {technicians.map((tech) => (
+              <View key={tech.id} style={commonStyles.card}>
+                <View style={commonStyles.row}>
+                  <View style={styles.techInfo}>
+                    <View style={[styles.statusDot, { backgroundColor: getStatusColor(tech.status) }]} />
+                    <View>
+                      <Text style={styles.techName}>{tech.name}</Text>
+                      <Text style={commonStyles.textSecondary}>{tech.status}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.jobsCount}>
+                    <Text style={styles.jobsCountText}>{tech.jobs}</Text>
+                    <Text style={commonStyles.textSecondary}>Jobs</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    // backgroundColor handled dynamically
   },
-  listContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+  scrollContent: {
+    padding: 16,
   },
-  listContainerWithTabBar: {
-    paddingBottom: 100, // Extra padding for floating tab bar
+  scrollContentWithTabBar: {
+    paddingBottom: 100,
   },
-  demoCard: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  headerButton: {
+    padding: 8,
+  },
+  greeting: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  subGreeting: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginBottom: 24,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -6,
+    marginBottom: 24,
+  },
+  statCard: {
+    width: '50%',
+    padding: 6,
+  },
+  statCardInner: {
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
     alignItems: 'center',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    elevation: 2,
   },
-  demoIcon: {
+  statIcon: {
     width: 48,
     height: 48,
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginBottom: 12,
   },
-  demoContent: {
-    flex: 1,
-  },
-  demoTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  statValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.text,
     marginBottom: 4,
-    // color handled dynamically
   },
-  demoDescription: {
+  statLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
+  linkText: {
     fontSize: 14,
-    lineHeight: 18,
-    // color handled dynamically
+    fontWeight: '600',
   },
-  headerButtonContainer: {
-    padding: 6,
+  jobCustomer: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
   },
-  tryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  statusBadgeContainer: {
+    marginTop: 8,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  techInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  statusDot: {
+    width: 12,
+    height: 12,
     borderRadius: 6,
   },
-  tryButtonText: {
-    fontSize: 14,
+  techName: {
+    fontSize: 16,
     fontWeight: '600',
-    // color handled dynamically
+    color: colors.text,
+    marginBottom: 2,
+  },
+  jobsCount: {
+    alignItems: 'center',
+  },
+  jobsCountText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.primary,
   },
 });
