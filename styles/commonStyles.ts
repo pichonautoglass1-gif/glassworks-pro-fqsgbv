@@ -1,19 +1,36 @@
 
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
+// Arizona-inspired color palette
+export const arizonaColors = {
+  cactusGreen: '#6B8E6F',
+  darkCactus: '#4A6B4E',
+  sandyBeige: '#E8D5C4',
+  burntOrange: '#D97642',
+  sunsetOrange: '#E89B5F',
+  skyBlue: '#87CEEB',
+  desertTan: '#C9A87C',
+  terracotta: '#C65D3B',
+  sageGreen: '#9CAF88',
+};
+
 export const colors = {
   background: '#F5F5F5',
   text: '#212121',
   textSecondary: '#757575',
-  primary: '#2962FF',
-  secondary: '#4CAF50',
-  accent: '#FFAB40',
+  primary: arizonaColors.burntOrange,
+  secondary: arizonaColors.cactusGreen,
+  accent: arizonaColors.sunsetOrange,
   card: '#FFFFFF',
-  highlight: '#BBDEFB',
+  highlight: arizonaColors.sandyBeige,
   border: '#E0E0E0',
   error: '#F44336',
-  success: '#4CAF50',
-  warning: '#FF9800',
+  success: arizonaColors.cactusGreen,
+  warning: arizonaColors.sunsetOrange,
+  skyBlue: arizonaColors.skyBlue,
+  desertTan: arizonaColors.desertTan,
+  terracotta: arizonaColors.terracotta,
+  sageGreen: arizonaColors.sageGreen,
 };
 
 export const buttonStyles = StyleSheet.create({

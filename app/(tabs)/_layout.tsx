@@ -34,6 +34,12 @@ export default function TabLayout() {
       label: 'Inventory',
     },
     {
+      name: 'marketing',
+      route: '/(tabs)/marketing',
+      icon: 'megaphone.fill',
+      label: 'Marketing',
+    },
+    {
       name: 'profile',
       route: '/(tabs)/profile',
       icon: 'person.fill',
@@ -61,6 +67,10 @@ export default function TabLayout() {
           <Icon sf="square.stack.3d.up.fill" drawable="ic_inventory" />
           <Label>Inventory</Label>
         </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="marketing">
+          <Icon sf="megaphone.fill" drawable="ic_marketing" />
+          <Label>Marketing</Label>
+        </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person.fill" drawable="ic_profile" />
           <Label>Profile</Label>
@@ -82,6 +92,7 @@ export default function TabLayout() {
         <Stack.Screen name="jobs" />
         <Stack.Screen name="customers" />
         <Stack.Screen name="inventory" />
+        <Stack.Screen name="marketing" />
         <Stack.Screen name="profile" />
       </Stack>
       <FloatingTabBar tabs={tabs} />
