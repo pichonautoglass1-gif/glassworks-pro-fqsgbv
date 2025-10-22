@@ -22,10 +22,10 @@ export default function TabLayout() {
       label: 'Jobs',
     },
     {
-      name: 'invoices',
-      route: '/(tabs)/invoices',
-      icon: 'doc.text.fill',
-      label: 'Invoices',
+      name: 'inventory',
+      route: '/(tabs)/inventory',
+      icon: 'square.stack.3d.up.fill',
+      label: 'Inventory',
     },
     {
       name: 'profile',
@@ -47,9 +47,9 @@ export default function TabLayout() {
           <Icon sf="wrench.and.screwdriver.fill" drawable="ic_jobs" />
           <Label>Jobs</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="invoices">
-          <Icon sf="doc.text.fill" drawable="ic_invoices" />
-          <Label>Invoices</Label>
+        <NativeTabs.Trigger name="inventory">
+          <Icon sf="square.stack.3d.up.fill" drawable="ic_inventory" />
+          <Label>Inventory</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person.fill" drawable="ic_profile" />
@@ -70,7 +70,7 @@ export default function TabLayout() {
       >
         <Stack.Screen name="(home)" />
         <Stack.Screen name="jobs" />
-        <Stack.Screen name="invoices" />
+        <Stack.Screen name="inventory" />
         <Stack.Screen name="profile" />
       </Stack>
       <FloatingTabBar tabs={tabs} />

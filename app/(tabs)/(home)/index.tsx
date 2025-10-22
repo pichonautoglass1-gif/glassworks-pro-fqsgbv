@@ -11,19 +11,25 @@ export default function DashboardScreen() {
     { label: 'Jobs Today', value: '8', icon: 'calendar', color: colors.primary },
     { label: 'Pending', value: '3', icon: 'clock', color: colors.warning },
     { label: 'Completed', value: '24', icon: 'checkmark.circle', color: colors.success },
-    { label: 'Revenue', value: '$4,250', icon: 'dollarsign.circle', color: colors.secondary },
+    { label: 'Low Stock Items', value: '3', icon: 'exclamationmark.triangle', color: colors.error },
   ];
 
   const recentJobs = [
-    { id: '1', customer: 'John Smith', vehicle: '2020 Honda Accord', status: 'In Progress', time: '10:30 AM' },
-    { id: '2', customer: 'Sarah Johnson', vehicle: '2019 Toyota Camry', status: 'Scheduled', time: '2:00 PM' },
-    { id: '3', customer: 'Mike Davis', vehicle: '2021 Ford F-150', status: 'Completed', time: '8:00 AM' },
+    { id: '1', customer: 'John Smith', vehicle: '2020 Honda Accord', glassType: 'Windshield', status: 'In Progress', time: '10:30 AM' },
+    { id: '2', customer: 'Sarah Johnson', vehicle: '2019 Toyota Camry', glassType: 'Back Glass', status: 'Scheduled', time: '2:00 PM' },
+    { id: '3', customer: 'Mike Davis', vehicle: '2021 Ford F-150', glassType: 'Windshield', status: 'Completed', time: '8:00 AM' },
   ];
 
   const technicians = [
     { id: '1', name: 'Alex Martinez', status: 'Active', jobs: 3 },
     { id: '2', name: 'Chris Lee', status: 'Active', jobs: 2 },
     { id: '3', name: 'Jordan Taylor', status: 'Break', jobs: 0 },
+  ];
+
+  const lowStockItems = [
+    { id: '1', item: 'Ford F-150 Windshield', quantity: 2, min: 3 },
+    { id: '2', item: 'Nissan Altima Windshield', quantity: 1, min: 2 },
+    { id: '3', item: 'Honda Accord Back Glass', quantity: 2, min: 3 },
   ];
 
   const getStatusColor = (status: string) => {
@@ -115,11 +121,48 @@ export default function DashboardScreen() {
                   </View>
                   <Text style={commonStyles.textSecondary}>{job.time}</Text>
                 </View>
-                <View style={styles.statusBadgeContainer}>
+                <View style={styles.jobFooter}>
+                  <View style={[styles.glassTypeBadge, { 
+                    backgroundColor: job.glassType === 'Windshield' ? colors.primary + '20' : colors.secondary + '20' 
+                  }]}>
+                    <Text style={[styles.glassTypeText, { 
+                      color: job.glassType === 'Windshield' ? colors.primary : colors.secondary 
+                    }]}>
+                      {job.glassType}
+                    </Text>
+                  </View>
                   <View style={[styles.statusBadge, { backgroundColor: getStatusColor(job.status) + '20' }]}>
                     <Text style={[styles.statusText, { color: getStatusColor(job.status) }]}>
                       {job.status}
                     </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Low Stock Alert */}
+          <View style={commonStyles.section}>
+            <View style={commonStyles.row}>
+              <View style={styles.sectionHeader}>
+                <IconSymbol name="exclamationmark.triangle.fill" color={colors.error} size={20} />
+                <Text style={commonStyles.subtitle}>Low Stock Alert</Text>
+              </View>
+              <Pressable onPress={() => console.log('View inventory')}>
+                <Text style={[styles.linkText, { color: colors.primary }]}>View All</Text>
+              </Pressable>
+            </View>
+            {lowStockItems.map((item) => (
+              <View key={item.id} style={commonStyles.card}>
+                <View style={commonStyles.row}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.itemName}>{item.item}</Text>
+                    <Text style={commonStyles.textSecondary}>
+                      Current: {item.quantity} units • Min: {item.min} units
+                    </Text>
+                  </View>
+                  <View style={styles.stockWarning}>
+                    <Text style={styles.stockWarningText}>Reorder</Text>
                   </View>
                 </View>
               </View>
@@ -235,18 +278,50 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: 4,
   },
-  statusBadgeContainer: {
+  jobFooter: {
+    flexDirection: 'row',
+    gap: 8,
     marginTop: 8,
+  },
+  glassTypeBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  glassTypeText: {
+    fontSize: 11,
+    fontWeight: '600',
   },
   statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    alignSelf: 'flex-start',
   },
   statusText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  stockWarning: {
+    backgroundColor: colors.error + '20',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  stockWarningText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.error,
   },
   techInfo: {
     flexDirection: 'row',

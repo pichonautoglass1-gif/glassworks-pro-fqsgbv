@@ -6,9 +6,23 @@ import { IconSymbol } from "@/components/IconSymbol";
 import { colors, commonStyles, buttonStyles } from "@/styles/commonStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+interface VehicleGlassInfo {
+  windshield: {
+    size: string;
+    tint: string;
+    features: string[];
+  };
+  backGlass: {
+    size: string;
+    tint: string;
+    features: string[];
+  };
+}
+
 export default function JobsScreen() {
   const [activeTab, setActiveTab] = useState<'all' | 'scheduled' | 'progress' | 'completed'>('all');
   const [vinInput, setVinInput] = useState('');
+  const [decodedInfo, setDecodedInfo] = useState<VehicleGlassInfo | null>(null);
 
   const jobs = [
     {
@@ -18,6 +32,7 @@ export default function JobsScreen() {
       vehicle: '2020 Honda Accord',
       vin: '1HGCV1F30LA123456',
       service: 'Windshield Replacement',
+      glassType: 'Windshield',
       status: 'In Progress',
       technician: 'Alex Martinez',
       scheduledTime: '10:30 AM',
@@ -30,7 +45,8 @@ export default function JobsScreen() {
       phone: '(555) 234-5678',
       vehicle: '2019 Toyota Camry',
       vin: '4T1BF1FK5KU123456',
-      service: 'Side Window Repair',
+      service: 'Back Glass Replacement',
+      glassType: 'Back Glass',
       status: 'Scheduled',
       technician: 'Chris Lee',
       scheduledTime: '2:00 PM',
@@ -43,7 +59,8 @@ export default function JobsScreen() {
       phone: '(555) 345-6789',
       vehicle: '2021 Ford F-150',
       vin: '1FTFW1E50MFA12345',
-      service: 'Rear Window Replacement',
+      service: 'Windshield Replacement',
+      glassType: 'Windshield',
       status: 'Completed',
       technician: 'Alex Martinez',
       scheduledTime: '8:00 AM',
@@ -57,6 +74,7 @@ export default function JobsScreen() {
       vehicle: '2022 Tesla Model 3',
       vin: '5YJ3E1EA0NF123456',
       service: 'Windshield Chip Repair',
+      glassType: 'Windshield',
       status: 'Scheduled',
       technician: 'Jordan Taylor',
       scheduledTime: '4:30 PM',
@@ -91,10 +109,36 @@ export default function JobsScreen() {
       Alert.alert('Invalid VIN', 'VIN must be 17 characters long');
       return;
     }
-    console.log('Decoding VIN:', vinInput);
+    console.log('Decoding VIN for auto glass:', vinInput);
+    
+    // Simulate VIN decoding with glass-specific information
+    const mockGlassInfo: VehicleGlassInfo = {
+      windshield: {
+        size: '59" x 32"',
+        tint: 'Light Green',
+        features: ['Rain Sensor', 'Heated', 'Acoustic Interlayer', 'HUD Compatible'],
+      },
+      backGlass: {
+        size: '54" x 28"',
+        tint: 'Privacy Dark',
+        features: ['Heated', 'Defrost Lines', 'Privacy Tint'],
+      },
+    };
+    
+    setDecodedInfo(mockGlassInfo);
+    
     Alert.alert(
-      'VIN Decoded',
-      `Vehicle Information:\n\nMake: Honda\nModel: Accord\nYear: 2020\nBody Style: Sedan\n\nThis would integrate with a VIN decoder API in production.`
+      'VIN Decoded - Auto Glass Info',
+      `Vehicle: 2020 Honda Accord\n\n` +
+      `WINDSHIELD:\n` +
+      `Size: ${mockGlassInfo.windshield.size}\n` +
+      `Tint: ${mockGlassInfo.windshield.tint}\n` +
+      `Features: ${mockGlassInfo.windshield.features.join(', ')}\n\n` +
+      `BACK GLASS:\n` +
+      `Size: ${mockGlassInfo.backGlass.size}\n` +
+      `Tint: ${mockGlassInfo.backGlass.tint}\n` +
+      `Features: ${mockGlassInfo.backGlass.features.join(', ')}\n\n` +
+      `This would integrate with a VIN decoder API in production.`
     );
   };
 
@@ -143,14 +187,14 @@ export default function JobsScreen() {
             </View>
           )}
 
-          {/* VIN Decoder Section */}
+          {/* VIN Decoder Section - Auto Glass Specific */}
           <View style={[commonStyles.card, styles.vinSection]}>
             <View style={styles.vinHeader}>
               <IconSymbol name="barcode.viewfinder" color={colors.primary} size={24} />
-              <Text style={styles.vinTitle}>VIN Decoder</Text>
+              <Text style={styles.vinTitle}>VIN Decoder - Auto Glass</Text>
             </View>
             <Text style={[commonStyles.textSecondary, styles.vinDescription]}>
-              Scan or enter VIN to auto-fill vehicle details
+              Decode VIN to get windshield and back glass specifications
             </Text>
             <TextInput
               style={commonStyles.input}
@@ -166,8 +210,57 @@ export default function JobsScreen() {
               onPress={handleDecodeVIN}
               disabled={vinInput.length !== 17}
             >
-              <Text style={styles.buttonText}>Decode VIN</Text>
+              <Text style={styles.buttonText}>Decode Glass Specs</Text>
             </Pressable>
+
+            {/* Decoded Glass Information */}
+            {decodedInfo && (
+              <View style={styles.decodedInfo}>
+                <View style={styles.glassInfoSection}>
+                  <View style={styles.glassInfoHeader}>
+                    <IconSymbol name="windshield" color={colors.primary} size={20} />
+                    <Text style={styles.glassInfoTitle}>Windshield</Text>
+                  </View>
+                  <View style={styles.glassInfoDetail}>
+                    <Text style={styles.glassInfoLabel}>Size:</Text>
+                    <Text style={styles.glassInfoValue}>{decodedInfo.windshield.size}</Text>
+                  </View>
+                  <View style={styles.glassInfoDetail}>
+                    <Text style={styles.glassInfoLabel}>Tint:</Text>
+                    <Text style={styles.glassInfoValue}>{decodedInfo.windshield.tint}</Text>
+                  </View>
+                  <View style={styles.featuresContainer}>
+                    {decodedInfo.windshield.features.map((feature, index) => (
+                      <View key={index} style={styles.featureBadge}>
+                        <Text style={styles.featureText}>{feature}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={styles.glassInfoSection}>
+                  <View style={styles.glassInfoHeader}>
+                    <IconSymbol name="rectangle.fill" color={colors.secondary} size={20} />
+                    <Text style={styles.glassInfoTitle}>Back Glass</Text>
+                  </View>
+                  <View style={styles.glassInfoDetail}>
+                    <Text style={styles.glassInfoLabel}>Size:</Text>
+                    <Text style={styles.glassInfoValue}>{decodedInfo.backGlass.size}</Text>
+                  </View>
+                  <View style={styles.glassInfoDetail}>
+                    <Text style={styles.glassInfoLabel}>Tint:</Text>
+                    <Text style={styles.glassInfoValue}>{decodedInfo.backGlass.tint}</Text>
+                  </View>
+                  <View style={styles.featuresContainer}>
+                    {decodedInfo.backGlass.features.map((feature, index) => (
+                      <View key={index} style={styles.featureBadge}>
+                        <Text style={styles.featureText}>{feature}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
 
           {/* Filter Tabs */}
@@ -234,8 +327,21 @@ export default function JobsScreen() {
                 </View>
 
                 <View style={styles.jobDetail}>
-                  <IconSymbol name="wrench.fill" color={colors.textSecondary} size={16} />
+                  <IconSymbol 
+                    name={job.glassType === 'Windshield' ? 'windshield' : 'rectangle.fill'} 
+                    color={colors.textSecondary} 
+                    size={16} 
+                  />
                   <Text style={styles.jobDetailText}>{job.service}</Text>
+                  <View style={[styles.glassTypeBadge, { 
+                    backgroundColor: job.glassType === 'Windshield' ? colors.primary + '20' : colors.secondary + '20' 
+                  }]}>
+                    <Text style={[styles.glassTypeText, { 
+                      color: job.glassType === 'Windshield' ? colors.primary : colors.secondary 
+                    }]}>
+                      {job.glassType}
+                    </Text>
+                  </View>
                 </View>
 
                 <View style={styles.jobDetail}>
@@ -319,6 +425,60 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.5,
   },
+  decodedInfo: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: 16,
+  },
+  glassInfoSection: {
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    padding: 12,
+  },
+  glassInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  glassInfoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  glassInfoDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  glassInfoLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  glassInfoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  featuresContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
+  },
+  featureBadge: {
+    backgroundColor: colors.highlight,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  featureText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.primary,
+  },
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: colors.card,
@@ -376,6 +536,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     flex: 1,
+  },
+  glassTypeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  glassTypeText: {
+    fontSize: 10,
+    fontWeight: '600',
   },
   photoIndicator: {
     flexDirection: 'row',
