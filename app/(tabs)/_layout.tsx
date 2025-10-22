@@ -22,6 +22,12 @@ export default function TabLayout() {
       label: 'Jobs',
     },
     {
+      name: 'customers',
+      route: '/(tabs)/customers',
+      icon: 'person.2.fill',
+      label: 'Customers',
+    },
+    {
       name: 'inventory',
       route: '/(tabs)/inventory',
       icon: 'square.stack.3d.up.fill',
@@ -47,6 +53,10 @@ export default function TabLayout() {
           <Icon sf="wrench.and.screwdriver.fill" drawable="ic_jobs" />
           <Label>Jobs</Label>
         </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="customers">
+          <Icon sf="person.2.fill" drawable="ic_customers" />
+          <Label>Customers</Label>
+        </NativeTabs.Trigger>
         <NativeTabs.Trigger name="inventory">
           <Icon sf="square.stack.3d.up.fill" drawable="ic_inventory" />
           <Label>Inventory</Label>
@@ -70,6 +80,7 @@ export default function TabLayout() {
       >
         <Stack.Screen name="(home)" />
         <Stack.Screen name="jobs" />
+        <Stack.Screen name="customers" />
         <Stack.Screen name="inventory" />
         <Stack.Screen name="profile" />
       </Stack>
